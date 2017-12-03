@@ -2,9 +2,12 @@
     \file
     \author <a href="http://www.innomatic.ca">innomatic</a>
     \brief  Dual COM port CDC device
+    \bug    UART operations are blocking call. Thus if a certain UART port is
+            not connected to external device then corresponding USB CDC device
+            becomes non-responsive.
     
     A USB CDC device with two COM ports, each connected to its own UART 
-    port. Settings of the UARTs are fixed with 115Kb, N81.
+    port. Settings of the UARTs are fixed with 115K baud, N81.
     
  */
 #include "project.h"
@@ -113,6 +116,7 @@ void CDC_RxTask(void)
             if (count)
             {
                 // send data to corresponding UART
+                // note that this is blocking call
                 if(port_no == 0)
                 {
                     UART0_PutArray(buffer, count);
